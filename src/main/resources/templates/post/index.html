@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/back :: setContent(~{this::content} )}">
+    <th:block th:fragment="content">
+        <h1>Welcome to bulletinboard</h1>
+        <p>You can register, edit, and delete articles.</p>
+    </th:block>
+</th:block>
+</html>
