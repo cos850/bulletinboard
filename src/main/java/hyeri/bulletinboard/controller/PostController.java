@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/post")
+@RequestMapping("/post/")
 @Log4j2
 @RequiredArgsConstructor
 public class PostController {
 
-    private final PostService service;
+    private final PostService postService;
 
     @GetMapping("/")
     public String index(){
@@ -27,11 +27,14 @@ public class PostController {
         return "/post/index";
     }
 
-    @GetMapping("/list")
+    @GetMapping("/list") // return 값이 없으면  이름이 같은 view를 자동으로 보여줌
     public void list(PageRequestDTO pageRequestDTO, Model model){
         log.info("list............................" + pageRequestDTO);
 
-        model.addAttribute("result", service.getList(pageRequestDTO));
+        model.addAttribute("result", postService.getList(pageRequestDTO));
+
+        log.info("model.getAttribute 결과............................");
+        log.info(model.getAttribute("result"));
     }
 
     @GetMapping("/register")
@@ -43,7 +46,7 @@ public class PostController {
     public String registerPost(PostDTO dto, RedirectAttributes redirectAttributes){
         log.info("dto...." + dto);
 
-        Long postId = service.register(dto);
+        Long postId = postService.register(dto);
 
         redirectAttributes.addFlashAttribute("msg", postId);
 
@@ -51,21 +54,21 @@ public class PostController {
     }
 
     @GetMapping({"/read", "/modify"})
-    public void read(long postId, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model){
-        log.info("postId : " + postId);
+    public void read(long pno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model){
+        log.info("pno : " + pno);
 
-        PostDTO dto = service.read(postId);
+        PostDTO dto = postService.get(pno);
 
         model.addAttribute("dto", dto);
     }
 
     @PostMapping("/remove")
-    public String remove(long postId, RedirectAttributes redirectAttributes){
-        log.info("postId : " + postId);
+    public String remove(long pno, RedirectAttributes redirectAttributes){
+        log.info("postId : " + pno);
 
-        service.remove(postId);
+        postService.removeWithReplies(pno);
 
-        redirectAttributes.addFlashAttribute("msg", postId);
+        redirectAttributes.addFlashAttribute("msg", pno);
 
         return "redirect:/post/list";
     }
@@ -75,10 +78,10 @@ public class PostController {
         log.info("post modify...........................");
         log.info("dto : " + dto);
 
-        service.modify(dto);
+        postService.modify(dto);
 
         redirectAttributes.addAttribute("page", requestDTO.getPage());
-        redirectAttributes.addAttribute("postId", dto.getPostId());
+        redirectAttributes.addAttribute("pno", dto.getPno());
 
         return "redirect:/post/read";
     }

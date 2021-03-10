@@ -3,16 +3,17 @@ package hyeri.bulletinboard.service;
 import hyeri.bulletinboard.dto.PageRequestDTO;
 import hyeri.bulletinboard.dto.PageResultDTO;
 import hyeri.bulletinboard.dto.PostDTO;
+import hyeri.bulletinboard.entity.Member;
 import hyeri.bulletinboard.entity.Post;
 import hyeri.bulletinboard.repository.PostRepository;
+import hyeri.bulletinboard.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -21,56 +22,82 @@ import java.util.function.Function;
 public class PostServiceImpl implements PostService{
 
     private final PostRepository repository;
+    private final ReplyRepository replyRepository;
 
+    // 글 등록
     @Override
     public Long register(PostDTO dto){
 
         log.info("DTO---------------------------");
         log.info(dto);
 
-        Post entity = dtoToEntity(dto);
+        Post post = dtoToEntity(dto);
 
-        log.info(entity);
+        log.info(post);
 
-        repository.save(entity);
+        repository.save(post);
 
-        return entity.getPostId();
+        return post.getPno();
     }
 
+    //목록 처리
     @Override
-    public PageResultDTO<PostDTO, Post> getList(PageRequestDTO requestDTO) {
-        Pageable pageable = requestDTO.getPageable(Sort.by("postId").descending());
+    public PageResultDTO<PostDTO, Object[]> getList(PageRequestDTO pageRequestDTO) {
 
-        Page<Post> result = repository.findAll(pageable);
+        log.info(pageRequestDTO);
 
-        Function<Post, PostDTO> fn = (entity -> entityToDto(entity));
+        Function<Object[], PostDTO> fn = (en -> entityToDto( (Post)en[0], (Member)en[1], (Long)en[2] ) );
+
+        Page<Object[]> result = repository.getPostWithReplyCount(
+                pageRequestDTO.getPageable(Sort.by("pno").descending() ));
 
         return new PageResultDTO<>(result, fn);
     }
 
+    // 게시물 조회
     @Override
-    public PostDTO read(Long postId){
-        Optional<Post> result = repository.findById(postId);
+    public PostDTO get(Long pno){
+        Object result = repository.getPostByPno(pno);
 
-        return result.isPresent()? entityToDto(result.get()):null;
+        Object[] arr = (Object[])result;
+
+        return entityToDto((Post)arr[0], (Member)arr[1], (Long)arr[2]);
     }
 
+    // 글 삭제
+    @Transactional
     @Override
-    public void remove(Long postId){
-        repository.deleteById(postId);
+    public void removeWithReplies(Long pno){
+
+        replyRepository.deleteByPno(pno);
+
+        repository.deleteById(pno);
     }
+
 
     @Override
     public void modify(PostDTO dto){
-        Optional<Post> result = repository.findById(dto.getPostId());
 
-        if(result.isPresent()){
-            Post entity = result.get();
+        Post post = repository.getOne(dto.getPno());
+        //getOne() : 필요한 순간까지 로딩 지연
 
-            entity.changeTitle(dto.getTitle());
-            entity.changeContent(dto.getContent());
+        if(post != null){
 
-            repository.save(entity);
+            post.changeTitle(dto.getTitle());
+            post.changeContent(dto.getContent());
+
+            repository.save(post);
         }
     }
+
+//
+//    @Override
+//    public PostDTO read(Long postId){
+//        Optional<Post> result = repository.findById(postId);
+//
+//        return result.isPresent()? entityToDto(result.get()):null;
+//    }
+//
+
+
 }
