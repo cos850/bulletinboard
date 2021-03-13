@@ -23,10 +23,22 @@ public interface ReplyService {
         Reply reply = Reply.builder()
                 .rno(replyDTO.getRno())
                 .text(replyDTO.getText())
-                .replyer(replyDTO.getReplayer())
+                .replyer(replyDTO.getReplyer())
                 .post(post)
                 .build();
 
         return reply;
+    }
+
+    default ReplyDTO entityToDto(Reply reply){
+        ReplyDTO dto = ReplyDTO.builder()
+                .rno(reply.getRno())
+                .text(reply.getText())
+                .replyer(reply.getReplyer())
+                .regDate(reply.getRegDate())
+                .modDate(reply.getModDate())
+                .build();
+
+        return dto;
     }
 }

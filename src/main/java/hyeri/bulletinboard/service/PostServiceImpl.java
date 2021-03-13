@@ -36,7 +36,9 @@ public class PostServiceImpl implements PostService{
         log.info(post);
 
         repository.save(post);
+        // save 할때는 항상 entity 객체를 보내줘야한다
 
+        // save 하면 pno 값이 자동으로 생성되기때문에 그 값을 return
         return post.getPno();
     }
 

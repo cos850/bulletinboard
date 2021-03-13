@@ -36,6 +36,59 @@
 
         <a th:href="@{/post/modify(pno=${dto.pno}, page=${requestDTO.page})}"><button type="button" class="btn btn-primary">수정</button> </a>
         <a th:href="@{/post/list(page=${requestDTO.page})}"><button type="button" class="btn btn-info">목록</button> </a>
+
+
+        <div>
+            <div class="mt-4">
+                <h5><span class="btn badge badge-primary replyCount">Reply Count [[${dto.replyCount}]] </span></h5>
+            </div>
+            <div class="list-group replyList">
+
+            </div>
+            <div class="form-group">
+                <label>Add Reply</label>
+                <input type="text" class="form-control" name="text"}>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            $(document).ready(function (){
+                var pno = [[${dto.pno}]];
+                var listGroup = $(".replyList");
+
+                function formatTime(str){
+                    var date = new Date(str);
+
+                    return date.getFullYear() + '/' +
+                        (date.getMonth()+1) + '/' +
+                        date.getDate() + ' ' +
+                        date.getHours() + ':' +
+                        date.getMinutes();
+                }
+
+                function loadJSONData(){
+                    $.getJSON('/replies/post/'+pno, function(arr){
+                        var str ="";
+                        $('.replyCount').html(" Reply Count " + arr.length);
+
+                        $.each(arr, function(idx, reply){
+                            console.log(reply);
+                            str += '    <div class="card-body" data-rno="' + reply.rno + '"><b>' + reply.rno + '</b>';
+                            str += '    <h5 class="card-title">' + reply.text + '</h5>';
+                            str += '    <h6 class="card-subtitle mb-2 text-muted">' + reply.replyer + '</h6>';
+                            str += '    <p class="card-text">' + formatTime(reply.regDate) + '</p>'
+                            str += '    </div>'
+                        })
+                        listGroup.html(str);
+                    });
+                }
+
+                $(".replyCount").click(function () {
+                    loadJSONData();
+                });
+            });
+
+        </script>
     </th:block>
 </th:block>
 </html>

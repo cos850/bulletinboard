@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class ReplyDTO {
     private Long rno;
     private String text;
-    private String replayer;
+    private String replyer;
     private Long pno;
     private LocalDateTime regDate, modDate;
 }

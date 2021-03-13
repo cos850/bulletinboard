@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/back :: setContent(~{this::content} )}">
+        <th:block th:fragment="content">
+                <h1 class="mt-4">Member Page</h1>
+                <br><br>
+                <h5>Your Email : <span th:text="${dto.email}"></span></h5>
+                <h5>Your Name : <span th:text="${dto.name}"></span> </h5>
+                <div sec:authorize="hasRole('USER')">Has USER ROLE</div>
+                <div sec:authorize="hasRole('STUDENT')">Has STUDENT ROLE</div>
+                <div sec:authorize="hasRole('STAFF')">Has STAFF ROLE</div>
+                <div sec:authorize="hasRole('ADMIN')">Has ADMIN ROLE</div>
+        </th:block>
+</th:block>

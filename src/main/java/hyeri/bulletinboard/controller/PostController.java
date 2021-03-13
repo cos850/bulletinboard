@@ -2,9 +2,11 @@ package hyeri.bulletinboard.controller;
 
 import hyeri.bulletinboard.dto.PageRequestDTO;
 import hyeri.bulletinboard.dto.PostDTO;
+import hyeri.bulletinboard.security.dto.AuthMemberDTO;
 import hyeri.bulletinboard.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,13 @@ public class PostController {
 
     private final PostService postService;
 
+    /*
+    final : 엔티티를 한번만 할당한다 (즉 두번이상 할당하려하면 컴파일 오류가 나서 확인이 가능하다)
+            Immutable/Read-only 속성을 선언하는 지시어
+            클래스, 함수, 변수가 변하지 못하도록 의도하고 싶다면 final로 선언한다
+            현재는 이 객체 내에서 postService의 값이 변하지 않기를 의도하고 사용됨
+     */
+
     @GetMapping("/")
     public String index(){
 
@@ -35,6 +44,15 @@ public class PostController {
 
         log.info("model.getAttribute 결과............................");
         log.info(model.getAttribute("result"));
+    }
+
+    @GetMapping("/member")
+    public void member(@AuthenticationPrincipal AuthMemberDTO authMemberDTO, Model model){
+
+        log.info("--------------memberDTO 반환값 ---------");
+        log.info(authMemberDTO);
+
+        model.addAttribute("dto", authMemberDTO);
     }
 
     @GetMapping("/register")
@@ -85,4 +103,5 @@ public class PostController {
 
         return "redirect:/post/read";
     }
+
 }

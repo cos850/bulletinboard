@@ -20,6 +20,8 @@ public class PageRequestDTO {
     }
 
     public Pageable getPageable(Sort sort){
+
         return PageRequest.of(page -1, size, sort);
+        //page 는 0 부터 시작하기 때문에 -1 해준다
     }
 }
