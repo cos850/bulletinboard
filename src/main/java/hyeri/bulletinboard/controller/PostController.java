@@ -30,17 +30,18 @@ public class PostController {
             현재는 이 객체 내에서 postService의 값이 변하지 않기를 의도하고 사용됨
      */
 
-    @GetMapping("/")
-    public String index(){
-
+    @GetMapping("/index")
+    public String getIndex(@AuthenticationPrincipal AuthMemberDTO authMemberDTO, Model model){
+        model.addAttribute("Authdto", authMemberDTO);
         return "/post/index";
     }
 
     @GetMapping("/list") // return 값이 없으면  이름이 같은 view를 자동으로 보여줌
-    public void list(PageRequestDTO pageRequestDTO, Model model){
+    public void list(PageRequestDTO pageRequestDTO, @AuthenticationPrincipal AuthMemberDTO authMemberDTO, Model model){
         log.info("list............................" + pageRequestDTO);
 
         model.addAttribute("result", postService.getList(pageRequestDTO));
+        model.addAttribute("Authdto", authMemberDTO);
 
         log.info("model.getAttribute 결과............................");
         log.info(model.getAttribute("result"));
@@ -52,12 +53,14 @@ public class PostController {
         log.info("--------------memberDTO 반환값 ---------");
         log.info(authMemberDTO);
 
-        model.addAttribute("dto", authMemberDTO);
+        model.addAttribute("Authdto", authMemberDTO);
     }
 
     @GetMapping("/register")
-    public void register(){
+    public void register(@AuthenticationPrincipal AuthMemberDTO authMemberDTO, Model model){
+
         log.info("register get...........");
+        model.addAttribute("Authdto", authMemberDTO);
     }
 
     @PostMapping("/register")
@@ -72,12 +75,13 @@ public class PostController {
     }
 
     @GetMapping({"/read", "/modify"})
-    public void read(long pno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model){
+    public void read(long pno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, @AuthenticationPrincipal AuthMemberDTO authMemberDTO, Model model){
         log.info("pno : " + pno);
 
         PostDTO dto = postService.get(pno);
 
         model.addAttribute("dto", dto);
+        model.addAttribute("Authdto", authMemberDTO);
     }
 
     @PostMapping("/remove")

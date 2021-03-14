@@ -16,7 +16,7 @@
 
             <div class="form-group">
                 <label>Writer Email</label>
-                <input type="text" class="form-control" name="writerEmail" placeholder="email을 적어주세요">
+                <input type="text" class="form-control" name="writerEmail" th:value="${Authdto.email}" readonly>
             </div>
 
             <button type="submit" class="btn btn-primary">등록</button>

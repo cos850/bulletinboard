@@ -3,12 +3,15 @@
 <th:block th:replace="~{/layout/back :: setContent(~{this::content} )}">
         <th:block th:fragment="content">
                 <h1 class="mt-4">Member Page</h1>
-                <br><br>
-                <h5>Your Email : <span th:text="${dto.email}"></span></h5>
-                <h5>Your Name : <span th:text="${dto.name}"></span> </h5>
-                <div sec:authorize="hasRole('USER')">Has USER ROLE</div>
-                <div sec:authorize="hasRole('STUDENT')">Has STUDENT ROLE</div>
-                <div sec:authorize="hasRole('STAFF')">Has STAFF ROLE</div>
-                <div sec:authorize="hasRole('ADMIN')">Has ADMIN ROLE</div>
+                <br><hr><br>
+                <h5>INFO</h5>
+                <h6>Your Email : <span th:text="${Authdto.email}"></span></h6>
+                <h6>Your Name : <span th:text="${Authdto.name}"></span> </h6>
+                <br>
+                <h5>ROLE</h5>
+                <div sec:authorize="hasRole('USER')"><h6>Has USER ROLE</h6></div>
+                <div sec:authorize="hasRole('STUDENT')"><h6>Has STUDENT ROLE</h6></div>
+                <div sec:authorize="hasRole('STAFF')"><h6>Has STAFF ROLE</h6></div>
+                <div sec:authorize="hasRole('ADMIN')"><h6>Has ADMIN ROLE</h6></div>
         </th:block>
 </th:block>

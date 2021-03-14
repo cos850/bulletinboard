@@ -20,8 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/post/index").permitAll() // 로그인하지 않아도 접근 가능
-                .antMatchers("/post/member").hasRole("STUDENT");
+                .antMatchers("/*").hasRole("USER");
 
         http.formLogin(); // 인증 문제시 로그인창으로 이동
 
