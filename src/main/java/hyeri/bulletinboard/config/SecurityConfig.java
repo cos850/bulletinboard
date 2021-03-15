@@ -20,9 +20,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/*").hasRole("USER");
+                .antMatchers("/post/list").permitAll()// 모든 사용자 열람 가능
+                .antMatchers("/post/index").permitAll()
+                .antMatchers("/post/register").hasRole("USER")
+                .antMatchers("/post/modify").hasRole("USER")
+                .antMatchers("/post/member").hasRole("USER");
 
         http.formLogin(); // 인증 문제시 로그인창으로 이동
+        http.logout(); // logout url 호출하면 알아서
 
     }
 

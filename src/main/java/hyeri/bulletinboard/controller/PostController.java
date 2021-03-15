@@ -30,7 +30,7 @@ public class PostController {
             현재는 이 객체 내에서 postService의 값이 변하지 않기를 의도하고 사용됨
      */
 
-    @GetMapping("/index")
+    @GetMapping({"/", "/index"})
     public String getIndex(@AuthenticationPrincipal AuthMemberDTO authMemberDTO, Model model){
         model.addAttribute("Authdto", authMemberDTO);
         return "/post/index";

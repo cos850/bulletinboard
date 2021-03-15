@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <th:block th:fragment="setContent(content)">
 
@@ -56,7 +56,17 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/post/member">
-                <span th:text="${Authdto.name}">님</span>
+                <span sec:authorize="hasRole('USER')">마이페이지</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">
+                <span sec:authorize="hasRole('USER')">로그아웃</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login">
+                <span sec:authorize="isAnonymous()">로그인</span>
               </a>
             </li>
             <li class="nav-item dropdown">

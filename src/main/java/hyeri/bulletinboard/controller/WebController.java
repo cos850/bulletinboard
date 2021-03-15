@@ -11,10 +11,18 @@ import hyeri.bulletinboard.security.dto.AuthMemberDTO;
 @Controller
 @Log4j2
 @RequiredArgsConstructor
-public class IndexController {
+public class WebController {
     @GetMapping("/")
     public String index(@AuthenticationPrincipal AuthMemberDTO authMemberDTO, Model model){
         model.addAttribute("Authdto", authMemberDTO);
         return "post/index";
     }
+
+    @GetMapping("signup")
+    public void signup(){
+        log.info("signup..............");
+
+        email
+    }
+
 }
